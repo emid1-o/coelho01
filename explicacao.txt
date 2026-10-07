@@ -1,0 +1,135 @@
+TRABALHO PRÁTICO 01 - SISTEMA DE GERENCIAMENTO ESCOLAR
+
+==================================================================
+1. ENTIDADES, ATRIBUTOS E MÉTODOS
+==================================================================
+
+1.1 Classe Escola
+Representa a instituição de ensino e é a classe central do sistema.
+
+Atributos:
+- nome: nome da escola.
+- cnpj: identificação fiscal da escola.
+- salas: lista de salas de aula pertencentes à escola.
+- professores: lista de professores que lecionam na escola.
+- alunos: lista de alunos matriculados.
+- aberta: indica se a escola está em funcionamento.
+
+Métodos:
+- criar_sala(): cria uma nova sala de aula dentro da escola.
+- remover_sala(): remove uma sala da escola.
+- contratar_professor(): vincula um professor à escola.
+- dispensar_professor(): desvincula um professor da escola.
+- matricular_aluno(): registra um aluno na escola.
+- remover_aluno(): remove o aluno e preserva o endereço dele.
+- fechar(): encerra a escola, destruindo as salas e desvinculando os professores.
+
+1.2 Classe SalaDeAula
+Representa um espaço físico de uma escola onde ocorrem as aulas.
+
+Atributos:
+- numero: identificação da sala.
+- capacidade: quantidade máxima de alunos.
+- ocupada: indica se a sala está reservada no momento.
+
+Métodos:
+- reservar(): marca a sala como ocupada, caso esteja livre.
+- liberar(): marca a sala como livre.
+
+1.3 Classe Professor
+Representa o profissional que leciona, podendo atuar em várias escolas.
+
+Atributos:
+- nome: nome do professor.
+- disciplina: matéria que leciona.
+- registro: número de registro profissional.
+- escolas: lista de escolas em que leciona.
+
+Métodos:
+- lecionar_em(): passa a lecionar em uma escola.
+- deixar_escola(): deixa de lecionar em uma escola.
+- listar_escolas(): retorna as escolas em que o professor atua.
+
+1.4 Classe Aluno
+Representa o estudante matriculado em uma escola.
+
+Atributos:
+- nome: nome do aluno.
+- matricula: número de matrícula.
+- data_nascimento: data de nascimento do aluno.
+- endereco: endereço de residência, criado junto com o aluno.
+
+Métodos:
+- exibir_dados(): mostra as informações do aluno.
+- atualizar_endereco(): altera os dados do endereço.
+- liberar_endereco(): entrega o endereço para ser usado em outro
+  contexto quando o aluno é removido.
+
+1.5 Classe Endereco
+Representa o local de residência de um aluno.
+
+Atributos:
+- rua: nome da rua.
+- numero: número do imóvel.
+- bairro: bairro.
+- cidade: cidade.
+- estado: unidade da federação.
+- cep: código postal.
+
+Métodos:
+- atualizar(): altera os campos do endereço.
+- formatado(): retorna o endereço em formato de texto legível.
+
+==================================================================
+2. CLASSIFICAÇÃO DAS RELAÇÕES
+==================================================================
+
+Critérios usados na análise:
+- Ciclo de vida: o objeto parte deixa de existir quando o todo é
+  destruído?
+- Exclusividade: a parte pertence a um único todo?
+- Existência independente: a parte faz sentido sozinha no sistema?
+
+2.1 Escola e SalaDeAula: COMPOSIÇÃO
+Uma sala de aula só tem sentido dentro de uma escola. Ela é criada pela
+própria escola, pertence a uma única escola e não é compartilhada. Se a
+escola fechar, as salas deixam de existir no sistema. Como o ciclo de
+vida da sala depende totalmente da escola, a relação é de composição
+(todo-parte forte, representada pelo losango preenchido).
+Cardinalidade: uma escola possui várias salas (1 para 0..*).
+
+2.2 Escola e Professor: AGREGAÇÃO
+Um professor pode lecionar em várias escolas e uma escola pode ter vários
+professores (relação muitos para muitos). A existência de um não depende
+da existência do outro: se a escola fechar, o professor continua existindo
+e apenas perde aquele vínculo. Há uma relação de "todo e parte", pois a
+escola reúne professores, mas a parte tem vida própria e pode ser
+compartilhada entre vários todos. Por isso a relação é de agregação
+(losango vazado).
+Cardinalidade: 0..* para 0..*.
+
+2.3 Aluno e Endereco: COMPOSIÇÃO
+O endereço é criado junto com o cadastro do aluno e só existe porque o
+aluno existe, pertencendo exclusivamente a ele. Esse é o comportamento de
+uma composição (losango preenchido). A particularidade do enunciado é que,
+quando o aluno é removido, o endereço pode continuar fazendo sentido
+isoladamente, por exemplo em relatórios. Isso não descaracteriza a
+composição: o endereço não sobrevive por conta própria, e sim porque o
+aluno, ao ser removido, repassa a posse dele para outro contexto (no
+código, a lista de endereços arquivados da escola). Enquanto o aluno
+existe, o endereço depende totalmente dele.
+Cardinalidade: um aluno possui um endereço (1 para 1).
+
+2.4 Escola e Aluno: ASSOCIAÇÃO (relação complementar)
+O enunciado não descreve essa relação, mas ela é necessária para o
+funcionamento do sistema, pois o aluno é matriculado em uma escola. Os
+dois objetos são independentes, sem relação de posse nem dependência de
+ciclo de vida, havendo apenas um vínculo de uso. Por isso é uma
+associação simples (linha sem losango).
+Cardinalidade: uma escola tem vários alunos (1 para 0..*).
+
+RESUMO
+Escola ----<>(preenchido)---- SalaDeAula : Composição
+Escola ----<>(vazado)-------- Professor  : Agregação
+Aluno  ----<>(preenchido)---- Endereco   : Composição
+Escola ---------------------- Aluno      : Associação
